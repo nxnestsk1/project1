@@ -3,6 +3,7 @@ package livro
 import io.ktor.server.application.*
 import io.ktor.server.html.*
 import io.ktor.server.routing.*
+import io.ktor.server.request.*
 import kotlinx.html.*
 
 fun Route.configureTemplating() {
@@ -78,15 +79,6 @@ fun Route.configureTemplating() {
                 ul {
                     li { a(href = "/books-page") { +"View Books" } }
                     li { a(href = "/add-book") { +"Add a New Book" } }
-                    // Formulário de pesquisa
-                    li {
-                        form(action = "/search-books", method = FormMethod.get) {
-                            input(type = InputType.text, name = "query") {
-                                attributes["placeholder"] = "Search..."
-                            }
-                            button(type = ButtonType.submit) { +"Search" }
-                        }
-                    }
                 }
             }
             div("content") {
@@ -119,6 +111,50 @@ fun Route.configureTemplating() {
                     }
                 }
                 a(href = "/add-book") { +"Add a New Book" }
+            }
+        }
+    }
+
+    // Página de formulário para adicionar livros
+    get("/add-book") {
+        call.respondHtml {
+            defaultLayout {
+                h2 { +"Add a New Book" }
+                form(action = "/books", method = FormMethod.post) {
+                    p { label { +"ID: " }; textInput(name = "id") { required = true } }
+                    p { label { +"Title: " }; textInput(name = "title") { required = true } }
+                    p { label { +"Author: " }; textInput(name = "author") { required = true } }
+                    p { label { +"Genre: " }; textInput(name = "genre") { required = true } }
+                    button(type = ButtonType.submit) { +"Add Book" }
+                }
+            }
+        }
+    }
+
+    // Processamento do formulário para adicionar livros
+    post("/books") {
+        val params = call.receiveParameters()
+        val id = params["id"]?.toIntOrNull() ?: 0
+        val title = params["title"] ?: ""
+        val author = params["author"] ?: ""
+        val genre = params["genre"] ?: ""
+
+        if (id > 0 && title.isNotEmpty() && author.isNotEmpty() && genre.isNotEmpty()) {
+            books.add(Book(id, title, author, genre))
+            call.respondHtml {
+                defaultLayout {
+                    h2 { +"Book Added Successfully" }
+                    p { +"$title by $author has been added to the bookstore." }
+                    a(href = "/") { +"Back to Home" }
+                }
+            }
+        } else {
+            call.respondHtml {
+                defaultLayout {
+                    h2 { +"Error" }
+                    p { +"Please provide valid book information." }
+                    a(href = "/add-book") { +"Back to Add Book" }
+                }
             }
         }
     }
