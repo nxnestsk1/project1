@@ -3,45 +3,45 @@ package livro
 import io.ktor.server.application.*
 import io.ktor.server.engine.*
 import io.ktor.server.netty.*
-import io.ktor.server.plugins.callloging.*
-import io.ktor.server.plugins.contentnegotiation.*
 import io.ktor.server.plugins.statuspages.*
-import io.ktor.serialization.kotlinx.json.*
-import org.slf4j.event.Level
-import io.ktor.server.routing.*
-import io.ktor.server.response.*
 import io.ktor.http.HttpStatusCode
+import io.ktor.server.plugins.callloging.*
+import io.ktor.serialization.kotlinx.json.*
+import io.ktor.server.response.*
+import org.slf4j.event.Level
+import kotlinx.serialization.json.Json
+import routes.configureRouting
+import io.ktor.server.plugins.contentnegotiation.*
 
 fun main() {
-    embeddedServer(Netty, port = 8081) {
-        module() // Certifique-se de que a função module() seja chamada
+    embeddedServer(Netty, port = 8082) {
+        module() // Chama a função 'module' para inicializar a aplicação
     }.start(wait = true)
 }
 
 fun Application.module() {
-    // Configurações de logging
+    // Instalar plugins necessários
     install(CallLogging) {
-        level = Level.INFO // Define o nível do log
+        level = Level.INFO
     }
 
-    // Configuração de negociação de conteúdo
-    install(ContentNegotiation) {
-        json() // Usa JSON para serialização/deserialização
-    }
-
-    // Configuração de tratamento de erros com StatusPages
     install(StatusPages) {
         exception<Throwable> { call, cause ->
-            call.respondText(
-                text = "An error occurred: ${cause.localizedMessage}",
-                status = HttpStatusCode.InternalServerError
+            call.respond(
+                HttpStatusCode.InternalServerError,
+                mapOf("error" to "An error occurred: ${cause.localizedMessage}")
             )
         }
     }
 
-    // Configuração das rotas
-    routing {
-        // Chama a função de configuração das rotas do Templating.kt
-        configureTemplating() // Certifique-se de importar corretamente essa função
+    // Instalar o ContentNegotiation para serialização e desserialização JSON
+    install(ContentNegotiation) {
+        json(Json {
+            prettyPrint = true
+            isLenient = true
+        })
     }
+
+    // Configurar rotas
+    configureRouting() // Chama a função 'configureRouting' no arquivo routing.kt
 }

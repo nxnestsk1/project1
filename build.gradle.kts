@@ -1,36 +1,23 @@
 plugins {
-    kotlin("jvm") version "1.9.10"
-    id("io.ktor.plugin") version "2.3.4"
-    id("org.jetbrains.kotlin.plugin.serialization") version "1.9.10"
+    application
+    kotlin("jvm") version "1.7.10"
 }
 
 repositories {
-    mavenCentral()
+    mavenCentral()  // Adiciona o repositório Maven Central
+    maven { url = uri("https://maven.pkg.jetbrains.space/public/p/ktor/eap") } // Repositório Ktor EAP (caso seja necessário)
 }
 
 dependencies {
-    implementation("io.ktor:ktor-server-html-builder:2.3.0") // Verifique se a versão corresponde à sua do Ktor
-    implementation("io.ktor:ktor-server-core:2.3.4")
-    implementation("io.ktor:ktor-server-netty:2.3.4")
-    implementation("io.ktor:ktor-server-content-negotiation:2.3.4")
-    implementation("io.ktor:ktor-server-html-builder:2.3.4")
-    implementation("io.ktor:ktor-serialization-kotlinx-json:2.3.4")
-    implementation("org.jetbrains.kotlinx:kotlinx-html-jvm:0.9.1")
-    implementation("ch.qos.logback:logback-classic:1.4.11") // Adicionando logback-classic
-    testImplementation("io.ktor:ktor-server-tests:2.3.4")
-    testImplementation("org.jetbrains.kotlin:kotlin-test-junit:1.9.10")
-    implementation("io.ktor:ktor-server-core:2.3.0")
-    implementation("io.ktor:ktor-server-content-negotiation:2.3.0")
-    implementation("io.ktor:ktor-server-call-logging:2.3.0")
-    implementation("io.ktor:ktor-server-status-pages:2.3.0")
+    // Ktor Server dependencies
+    implementation("io.ktor:ktor-server-core:2.3.1")        // Núcleo do servidor Ktor
+    implementation("io.ktor:ktor-server-netty:2.3.1")       // Engine Netty para Ktor
+    implementation("io.ktor:ktor-server-html-builder:2.3.1") // Suporte para construção de HTML
+    implementation("io.ktor:ktor-server-call-logging:2.3.1") // Para registro de chamadas
+    implementation("io.ktor:ktor-server-status-pages:2.3.1") // Para gerenciar páginas de status
+    implementation("ch.qos.logback:logback-classic:1.4.11") // Logger para Ktor
+    implementation("org.jetbrains.kotlinx:kotlinx-html-jvm:0.9.1") // Para construção de HTML
+    implementation("org.slf4j:slf4j-simple:2.0.9") // Logger simples SLF4J
     implementation("io.ktor:ktor-serialization-kotlinx-json:2.3.0")
-    implementation("ch.qos.logback:logback-classic:1.4.11")
-    implementation("io.ktor:ktor-server-core:2.3.0") // Certifique-se de usar a versão compatível
-    implementation("io.ktor:ktor-server-netty:2.3.0")// Para logs
-}
-
-java {
-    toolchain {
-        languageVersion.set(JavaLanguageVersion.of(20))
-    }
+    implementation("io.ktor:ktor-server-content-negotiation:2.3.1")
 }
