@@ -5,13 +5,13 @@ import io.ktor.server.engine.*
 import io.ktor.server.netty.*
 import io.ktor.server.plugins.statuspages.*
 import io.ktor.http.HttpStatusCode
-import io.ktor.server.plugins.callloging.*
 import io.ktor.serialization.kotlinx.json.*
-import io.ktor.server.response.*
+import io.ktor.server.plugins.callloging.*
 import org.slf4j.event.Level
 import kotlinx.serialization.json.Json
-import routes.configureRouting
 import io.ktor.server.plugins.contentnegotiation.*
+import io.ktor.server.response.*
+import livro.routes.configureRouting // Importa a função de configuração de rotas
 
 fun main() {
     embeddedServer(Netty, port = 8082) {
@@ -43,5 +43,5 @@ fun Application.module() {
     }
 
     // Configurar rotas
-    configureRouting() // Chama a função 'configureRouting' no arquivo routing.kt
+    configureRouting() // Chama a função de configuração de rotas
 }

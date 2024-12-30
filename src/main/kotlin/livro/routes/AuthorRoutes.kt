@@ -9,5 +9,8 @@ fun Route.authorRoutes() {
     route("/authors") {
         post("/") { authorController.addAuthor(call) }
         get("/") { authorController.getAuthors(call) }
+        get("/{id}") { authorController.getAuthorById(call) }
+        put("/{id}") { authorController.updateAuthor(call) }
+        delete("/{id}") { authorController.deleteAuthor(call) }
     }
 }
